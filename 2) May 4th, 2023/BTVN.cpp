@@ -60,7 +60,7 @@ NODE* createNode(HangHoa &data) {
 	return newNode;
 }
 int isEmpty(LL *list) {
-	return (list->head == NULL && list->tail == NULL) ? 1 : 0;
+	return list->head == NULL && list->tail == NULL ? 1 : 0;
 }
 // Insert head function
 void insertHead(LL* list, HangHoa &data) {
@@ -122,7 +122,6 @@ void deleteNode(LL* list, NODE* node) {
 		list->head = node->next;
 		if (list->head != NULL)
 			list->head->prev = NULL;
-
 		else
 			list->tail = NULL;
 	}
