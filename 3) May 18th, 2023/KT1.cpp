@@ -1,161 +1,135 @@
 #include <iostream>
-#include <string>
-#include <fstream>
-#include <Windows.h>
-#define MAX 100
-void textcolor(int x){
-	HANDLE y = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(y, x);
-}
-struct DoAn{
-	char MaDoAn[20];
-	char MaSinhVien[20];
-	std::string TenGiaoVienHD;
-	int diemso;
+using namespace std;
+
+// Định nghĩa cấu trúc của một nút trong cây
+struct NODE {
+    int data;
+    NODE* left;
+    NODE* right;
 };
-void flush_file(std::ifstream& f) { //Ham xoa dau ENTER trong file
-	char c;
-	while (f.get(c) && c != '\n' && c != std::ifstream::traits_type::eof());
+typedef struct BinarySearchTree{
+    NODE* root;
+}BST;
+void initBST(BST& bst) {
+    bst.root = NULL;
 }
-//Yeu cau 1
-int inputDoAn(DoAn* do_an, int* n, char file_input[]) {
-	std::ifstream file;
-	file.open(file_input);
-	if (!file) {
-		std::cout << "File khong ton tai";
-		return 0;
-	}
-	file >> *n;
-	flush_file(file);
-	for (int i = 0; i < *n; i++) {
-		file >> do_an[i].MaDoAn;
-		file >> do_an[i].MaSinhVien;
-		flush_file(file);
-		getline(file, do_an[i].TenGiaoVienHD);
-		file >> do_an[i].diemso;
-		flush_file(file);
-	}
-	file.close();
-	return 1;
+// Hàm để tạo một nút mới
+NODE* createNode(int value) {
+    NODE* newNode = new NODE;
+    newNode->data = value;
+    newNode->left = nullptr;
+    newNode->right = nullptr;
+    return newNode;
 }
-void outputDoAn(DoAn do_an[], int *n){
-	std::cout << "So luong do an: " << *n << '\n';
-	std::cout << "Danh sach cac do an: \n";
-	for (int i = 0; i < *n; i++){
-		std::cout << "Do an thu " << i + 1 << std::endl;
-		std::cout << "Ma do an: " << do_an[i].MaDoAn << std::endl;
-		std::cout << "Ma sinh vien: " << do_an[i].MaSinhVien << std::endl;
-		std::cout << "Ten giao vien huong dan: " << do_an[i].TenGiaoVienHD << std::endl;
-		std::cout << "Diem so: " << do_an[i].diemso << std::endl << std::endl;
-	}
-}
-//Yeu cau 2
-void lietke2(DoAn do_an[], int n){
-	int dem = 0;
-	std::string tengiaovien;
-	for (int j = 0; j < n; j++){
-		tengiaovien = do_an[j].TenGiaoVienHD;
-		for (int i = 0; i < n; i++)
-			//if (do_an[i].TenGiaoVienHD.compare(tengiaovien) == 0)
-			if (do_an[i].TenGiaoVienHD == tengiaovien)
-				dem++;
-		if (dem > 1) {
-			std::cout << tengiaovien << std::endl;
-		}
-		dem = 0;
-	}
-}
-//Yeu cau 3
-int timmax(DoAn do_an[], int n){
-	int max = do_an[0].diemso;
-	for (int i = 0; i < n; i++)
-		if (do_an[i].diemso > max)
-			max = do_an[i].diemso;
-	return max;
-}
-void xuatmasinhvien(DoAn do_an[], int n){
-	for (int i = 0; i < n; i++){
-		if (do_an[i].diemso == timmax(do_an, n)) {
-			std::cout << do_an[i].MaSinhVien << '\n';
-		}
-	}
-}
-//Yeu cau 4
-void lietke4(DoAn do_an[], int n){
-		for (int i = 0; i < n; i++)
-			std::cout << do_an[i].TenGiaoVienHD << std::endl;
-}
-void clearFile(char filename[]) {
-	std::ofstream ofs;
-	ofs.open(filename, std::ofstream::out | std::ofstream::trunc);
-	ofs.close();
-}
-int select(){
-	int o;
-	std::cout << "Moi ban nhap yeu cau(Nhap so 0 de thoat chuong trinh): ";
-	std::cin >> o;
-	while (!(o >= 0 && o <= 6)){
-		std::cout << "Yeu cau khong hop le, vui long ban nhap lai: ";
-		std::cin >> o;
-	}
-	return o;
-}
-void program(){
-	textcolor(12);
-	DoAn do_an[MAX];
-	char file_input[] = "KT1.txt";
-	int n = 0;
-	int o = select();
-	switch (o) {
-		case 1:{
-					textcolor(14);
-					if (inputDoAn(do_an, &n, file_input))
-						std::cout << "Nhap danh sach cac do an thanh cong" << std::endl;
-					outputDoAn(do_an, &n);
-		}break;
-		case 2:{
-				   textcolor(9);
-				   inputDoAn(do_an, &n, file_input);
-				   std::cout << "Giao vien tham gia huong dan tu 2 do an tro len:\n";
-				   lietke2(do_an, n);
-		}break;
-		case 3:{
-				   textcolor(11);
-				   inputDoAn(do_an, &n, file_input);
-				   std::cout << "Cac ma sinh vien co diem do an lon nhat la: \n";
-				   xuatmasinhvien(do_an, n);
-		}break;
-		case 4:{
-				   textcolor(10);
-				   inputDoAn(do_an, &n, file_input);
-				   std::cout << "Cac giao vien co huong dan do an trong danh sach: \n";
-				   lietke4(do_an, n);
-		}break;
-		case 5:{
-				   inputDoAn(do_an, &n, file_input);
 
-		}break;
-		case 6:{
-				   inputDoAn(do_an, &n, file_input);
-
-		}break;
-		default: {
-					 std::cout << "Thoat chuong trinh trong ";
-					 for (int i = 3; i >= 1; i--) {
-						 std::cout << i;
-						 Sleep(1000);
-						 std::cout << '\b';
-					 }
-					 Sleep(500);
-					 exit(0);
-		}
-			break;
-	}
-	
+// Hàm để thêm một nút vào cây
+int insertNode(NODE *&root, int value) {
+    if (root == NULL) {
+        root = createNode(value);
+        return 1;
+    }
+    if (value == root->data) {
+        cout << "Gia tri da ton tai.\n";
+        return 0;
+    }
+    if (value < root->data) {
+        insertNode(root->left, value);
+    }
+    else {
+        insertNode(root->right, value);
+    }
 }
-int main(){
-	while (true)
-		program();
-	system("pause");
-	return 0;
+void traverseNLR(NODE* node) {
+    if (node == NULL)
+        return;
+    cout << node->data << " ";
+    traverseNLR(node->left);
+    traverseNLR(node->right);
+}
+// Hàm để tính tổng các phần tử của cây con bên phải của gốc
+int sumRightSubtree(NODE* root) {
+    if (root == nullptr || root->right == nullptr) {
+        return 0;
+    }
+    return root->right->data + sumRightSubtree(root->right->left) + sumRightSubtree(root->right->right);
+}
+
+// Hàm để tìm phần tử lớn nhất trong cây
+int findMax(NODE* root) {
+    if (root == nullptr) {
+        cout << "Empty tree.\n"<< endl;
+        return INT_MIN;
+    }
+    if (root->right == nullptr) {
+        return root->data;
+    }
+    return findMax(root->right);
+}
+
+// Hàm để đếm số lượng số chẵn trong cây
+int countEvenNumbers(NODE* root) {
+    if (root == nullptr) {
+        return 0;
+    }
+    int count = 0;
+    if (root->data % 2 == 0) {
+        count++;
+    }
+    count += countEvenNumbers(root->left);
+    count += countEvenNumbers(root->right);
+    return count;
+}
+int title() {
+    int choice;
+    cout << "1. Them gia tri vao cay." << endl;
+    cout << "2. Tinh tong cac phan tu cua cay con ben phai cua goc." << endl;
+    cout << "3. Xuat phan tu lon nhat trong cay." << endl;
+    cout << "4. Dem so luong so chan trong cay." << endl;
+    cout << "0. Thoat" << endl;
+    cout << "Lua chon cua ban: ";
+    cin >> choice;
+    while (!(choice >= 0 && choice <= 4)) {
+        cout << "Ban da nhap sai yeu cau, vui long nhap lai: ";
+        cin >> choice;
+    }
+    return choice;
+}
+int main() {
+    BST bst;
+    initBST(bst);
+    int choice;
+    int arr[] = { 5,3,7,2,4,1,8,6,9 };
+    int size = sizeof(arr) / sizeof(arr[0]);
+    for (int i = 0; i < size; i++) {
+        insertNode(bst.root, arr[i]);
+    }
+    
+    do {
+        choice = title();
+        switch (choice) {
+        case 0:
+            exit(0);
+            break;
+        case 1: {
+            cout << "Da nhap du lieu tu mang A thanh cong.\n"; 
+            traverseNLR(bst.root);
+            cout << endl;
+        }break;
+        case 2:
+            cout << "Tong cac phan tu cua cay con ben phai cua goc: " << sumRightSubtree(bst.root) << endl;
+            break;
+        case 3:
+            cout << "Phan tu lon nhat trong cay: " << findMax(bst.root) << endl;
+            break;
+        case 4:
+            cout << "So luong so chan trong cay: " << countEvenNumbers(bst.root) << endl;
+            break;
+        default:
+            exit(0);
+            break;
+        }
+
+    } while (choice != 0);
+
+    return 0;
 }
